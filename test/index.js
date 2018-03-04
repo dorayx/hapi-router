@@ -62,6 +62,31 @@ lab.describe('hapi-router', () => {
 
     expect(server.table()).to.have.length(3)
   })
+
+  lab.test('route path prefiexed based on the provided directory structure by default', async () => {
+    register({
+      routes: 'test/routes/**/*.js'
+    })
+
+    expect(server.table().map(t => t.path)).to.equal([
+      '/test/routes/test1',
+      '/test/routes/api/test2',
+      '/test/routes/api/test3'
+    ])
+  })
+
+  lab.test('can prefix route path', async () => {
+    register({
+      routes: 'test/routes/**/*.js',
+      prefix: (_, path) => '/prefiexed' + path
+    })
+
+    expect(server.table().map(t => t.path)).to.equal([
+      '/prefiexed/test1',
+      '/prefiexed/test2',
+      '/prefiexed/test3'
+    ])
+  })
 })
   // function register (options) {
   //   server.register({
